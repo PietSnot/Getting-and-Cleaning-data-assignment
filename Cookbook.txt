@@ -1,0 +1,75 @@
+Cookbook
+
+Description of what I did and how I did it, with respect to
+the assignment of the Coursera course "Getting and cleaning Data".
+
+Getting the raw data
+The raw data can be obtained from this url (see also the assignment itself):
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip 
+
+This is a zip file, which must be unpacked.
+
+We then have two folders with the data, called 'train' and 'test'.
+For the 'train' map we have the following (the same holds for the test map):
+
+there are three files that matter:
+
+1) X_train.txt
+2) y_train.txt
+3) subject_train.txt
+
+Now, the first file is pretty nasty to read in. It is a fixed width, but I could not
+read it in with either read.csv (sep = " ") or read.fwf(width = rep(16, 561).
+Both methods gave me errors. so I opened this file in excel, split the lines
+with the fixed width option, and saved it as csv.
+
+This file comes without a header file, but the headers are somewhat given in the file
+"features.txt". I put this file into the repository as well, it is more or less what I did in
+the excel file.
+
+The file "y_train.txt" contains the numbers of the activities. This file can simply
+be "cbind"-ed to the X-train.txt file. The same holds for the file "subject_train.txt".
+This file contains the numbers of the people that participated in the big test.
+
+From here I named these "subjects" as "person"s.
+
+You can see all these actions in the file "run_analysis.R". I've written the code
+such that all that I wrote above is easily to follow in the code.
+(at least: that was the idea, I hope the reader will agree).
+
+*****************************************************************************************************
+
+The data manipulation in the excel file.
+
+Here are the first four lines of the features file, and my manipulations:
+
+ 
+naam	mean	std	samen	activiteit	spatie	streepje	kolom		headers	means							   
+1 tBodyAcc_mean_X	Ja		WAAR	tBodyAcc_mean_X	2	11	1	1	"tBodyAcc_mean_X"	tBodyAcc_mean_X  =  mean(tBodyAcc_mean_X , rm.na = TRUE) ,							   
+2 tBodyAcc_mean_Y	Ja		WAAR	tBodyAcc_mean_Y	2	11	2	1,2	"tBodyAcc_mean_X","tBodyAcc_mean_Y"	tBodyAcc_mean_Y  =  mean(tBodyAcc_mean_Y , rm.na = TRUE) ,							   
+3 tBodyAcc_mean_Z	Ja		WAAR	tBodyAcc_mean_Z	2	11	3	1,2,3	"tBodyAcc_mean_X","tBodyAcc_mean_Y","tBodyAcc_mean_Z"	tBodyAcc_mean_Z  =  mean(tBodyAcc_mean_Z , rm.na = TRUE) ,							   
+4 tBodyAcc_std_X		Ja	WAAR	tBodyAcc_std_X	2	11	4	1,2,3,4	"tBodyAcc_mean_X","tBodyAcc_mean_Y","tBodyAcc_mean_Z","tBodyAcc_std_X"	tBodyAcc_std_X  =  mean(tBodyAcc_std_X , rm.na = TRUE) ,							 
+
+The first column is the raw feature-information, and I took the liberty to remove all "()" pairs, I changed the "-" to "_", so I hoped that what would remain would be legal R-names.
+
+In the second column I tested the names in A for the presence of the word "mean". A "Ja" indicated yes.
+In the third column ditto, but now I checked for the presence of "std". Again, "Ja" indicates yes.
+
+The fourth column is "WAAR" (TRUE in English) if either column 2 or column 3 has "Ja".
+
+Column 5 is a copy of column 1. That was not originally so, but after long trials I decided to simply copy column 1.
+
+Columns 6, 7 and 8 are some help columns, to enable the splitting up of column 5.
+
+This gives me the opportunity to derive the columns of interest, in column 9. The last element of column 9 gives me the interesting columns, (this last one to be seen in the actual excel file), which I pasted into the R program.
+
+Somewhat likewise for column 10, where I derived the column names in a form suitable for R.
+
+And finally, in the last column, I derived a text that would calculate the mean of all the 79 columns of the required tidy data, where the means are calculated for all 79 columns, for each person and each activity.
+This finalfile is uploaded in the assignment itself, but I also uploaded it into the Github-repository.
+
+Well, as you can see I did not all the work in R, by no means, but I used whatever I thought was pratical, like using excel to append the files somewhat and to derive some handy texts that I could paste into R.
+
+I hope it is clear, and studiyng the R file with the excel file will clear up many questions.
+
